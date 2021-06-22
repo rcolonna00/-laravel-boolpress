@@ -7,10 +7,19 @@
         <div class="row">
             @foreach ($posts as $post)
                 <div class="col-6">
-                    <div class="card" style="width: 18rem;">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ $post->title }}</h5>
-                            <a href=" {{route('blog-page', ['slug' => $post->slug])}} " class="btn btn-primary">Leggi il post</a>
+                            <a href=" {{route('admin.posts.show', ['post' => $post->id])}} " class="btn btn-primary">Leggi il post</a>
+
+                            <a href=" {{route('admin.posts.edit', ['post' => $post->id])}} " class="btn btn-success">Modifica il post</a>
+
+                            <form action="{{ route('admin.posts.destroy', ['post' => $post->id]) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                
+                                <input type="submit" class="btn btn-danger" value="Cancella Post">
+                            </form>
                         </div>
                     </div>
                 </div>
