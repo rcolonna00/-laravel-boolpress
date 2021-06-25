@@ -26,6 +26,10 @@ Route::get('/categories/{slug}', 'CategoryController@show')->name('category-page
 
 Route::get('/tags/{slug}', 'TagController@show')->name('tag-page');
 
+// Post visualizzati con vue.js
+Route::get('/vue-posts', 'PostController@vuePosts')->name('vue-post');
+
+
 Route::prefix('admin')
     ->namespace('Admin')
     ->name('admin.')
