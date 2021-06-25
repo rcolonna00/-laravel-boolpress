@@ -14,7 +14,13 @@
         @if ($post->category)
             <div class="mt-2 mb-2"> <strong>Category:</strong> {{ $post->category->name }}</div>
         @endif
-        
+
+        <div class="mt-2 mb-2"> 
+            <strong>Tags:</strong>
+            @foreach ($post_tags as $tag)
+                {{ $tag->name }}{{ $loop->last ? '' : ', ' }}
+            @endforeach
+        </div>
 
         <p>{{ $post->content }}</p>
         

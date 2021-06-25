@@ -24,6 +24,8 @@ Route::get('/blog/{slug}', 'PostController@show')->name('blog-page');
 Route::get('/categories', 'CategoryController@index')->name('categories');
 Route::get('/categories/{slug}', 'CategoryController@show')->name('category-page');
 
+Route::get('/tags/{slug}', 'TagController@show')->name('tag-page');
+
 Route::prefix('admin')
     ->namespace('Admin')
     ->name('admin.')
