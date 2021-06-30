@@ -42,6 +42,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('categories') }}">Categorie</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('contacts') }}">Contattaci</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

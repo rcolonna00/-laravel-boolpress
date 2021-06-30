@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/contacts', 'HomeController@contacts')->name('contacts');
+Route::post('/handle-new-contact', 'HomeController@handleNewContact')->name('handle-new-contact');
+Route::get('/contacts-thankyou', 'HomeController@contactsThankYou')->name('contacts-thankyou');
 
 // Gestione pubblica dei post
 Route::get('/blog', 'PostController@index')->name('blog');

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewPostAdminNotification;
 use App\Post;
 use App\Category;
 use App\Tag;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -59,7 +61,7 @@ class PostController extends Controller
             'content' => 'required|max:65000',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|exists:tags,id',
-            'cover-image' => 'image|max:10000'
+            'cover-image' => 'nullable|image|max:10000'
         ]);
 
         $new_post_data = $request->all();
@@ -84,9 +86,8 @@ class PostController extends Controller
         // Quando finalmente troviamo uno slug libero, popoliamo i data da salvare
         $new_post_data['slug'] = $new_slug;
 
-        // Se c'è un' immagine caricata dall'utente la salvo in storage 
-        // e aggiungo il path relativo a coverin $new_post_data 
-        //$new_post_data['cover'] = 'path_relativo';
+        // Se c'è un'immagine caricata dall'utente, la salvo in storage
+        // e aggiungo il path relativo a cover in $new_post_data
         if(isset($new_post_data['cover-image'])) {
             $new_img_path = Storage::put('posts-cover', $new_post_data['cover-image']);
 
@@ -103,6 +104,9 @@ class PostController extends Controller
         if(isset($new_post_data['tags']) && is_array($new_post_data['tags'])) {
             $new_post->tags()->sync($new_post_data['tags']);
         }
+
+        // Invio l'email all'amministratore del sito
+        Mail::to('alessandro@email.it')->send(new NewPostAdminNotification($new_post));
 
         return redirect()->route('admin.posts.show', ['post' => $new_post->id]);
     }
@@ -156,11 +160,13 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required|max:65000',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|exists:tags,id'
+            'tags' => 'nullable|exists:tags,id',
+            'cover-image' => 'nullable|image|max:10000'
         ]);
 
         $modified_post_data = $request->all();
@@ -191,6 +197,14 @@ class PostController extends Controller
 
             // Quando finalmente troviamo uno slug libero, popoliamo i data da salvare
             $modified_post_data['slug'] = $new_slug;
+        }
+
+        if(isset($modified_post_data['cover-image'])) {
+            $image_path = Storage::put('posts-cover', $modified_post_data['cover-image']);
+
+            if($image_path) {
+                $modified_post_data['cover'] = $image_path;
+            }
         }
 
         $post->update($modified_post_data);
